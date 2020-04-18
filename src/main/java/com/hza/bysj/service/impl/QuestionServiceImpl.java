@@ -89,7 +89,6 @@ public class QuestionServiceImpl implements IQuestionService {
 
     @Override
     public ServerResponse<List<Question>> push_questionsByDate() {
-
         return null;
     }
 
