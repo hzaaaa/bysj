@@ -9,6 +9,7 @@ public interface QuestionDAO extends JpaRepository<Question,Integer>{
 
     List<Question> findAllByUser_id(Integer user_id);
     List<Question> findAllByTag_id(Integer tag_id);
+    List<Question> findByDate
 
     //int countByName(String userName);
 }

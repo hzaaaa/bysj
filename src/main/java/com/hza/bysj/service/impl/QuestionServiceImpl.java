@@ -15,6 +15,12 @@ public class QuestionServiceImpl implements IQuestionService {
     @Autowired
     private QuestionDAO questionDAO;
 
+    private Comparator<Question> c = new Comparator<Question>() {
+        @Override
+        public int compare(Question q1, Question q2) {
+            return q1.getDate().compareTo(q2.getDate());
+        }
+    };
     @Override
     public ServerResponse<Question> ask_question(String question_title,String question_explain,Tag tag, User user) {
 
@@ -84,12 +90,24 @@ public class QuestionServiceImpl implements IQuestionService {
     @Override
     public ServerResponse<List<Question>> push_questionsByUser(User user) {
 
+        LinkedList<Question> questionslist = new LinkedList<>();
+        List<Tag> taglist = user.getTaglist();
+        for(int i=0;i<taglist.size();i++){
+            List<Question> questions = questionDAO.findAllByTag_id(taglist.get(i).getId());
+            Iterator<Question> iterator = questions.iterator();
+            for(int j=0;j<questions.size();j++){
+                questionslist.add(iterator.next());
+            }
+        }
 
-        return null;
+        questionslist.sort(c);
+
+        return ServerResponse.createBySuccess(questionslist);
     }
 
     @Override
     public ServerResponse<List<Question>> push_questionsByDate() {
+        questionDAO.f
         return null;
     }
 

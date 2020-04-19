@@ -1,6 +1,7 @@
 package com.hza.bysj.pojo;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tag")
@@ -12,7 +13,16 @@ public class Tag {
 
     @Column(name = "tag")
     private  String tag;
+    @ManyToMany(mappedBy = "taglist")
+    private List<User> userlist;
 
+    public List<User> getUserlist() {
+        return userlist;
+    }
+
+    public void setUserlist(List<User> userlist) {
+        this.userlist = userlist;
+    }
 
     public int getId() {
         return id;

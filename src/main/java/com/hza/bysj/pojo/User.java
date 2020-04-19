@@ -1,11 +1,7 @@
 package com.hza.bysj.pojo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -26,7 +22,19 @@ public class User {
     @Column(name = "password_answer")
     private  String password_answer;
 
+    @ManyToMany
+    @JoinTable(name = "user_tag",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> taglist;
 
+
+    public List<Tag> getTaglist() {
+        return taglist;
+    }
+
+    public void setTaglist(List<Tag> taglist) {
+        this.taglist = taglist;
+    }
 
     public String getPassword_question() {
         return password_question;
