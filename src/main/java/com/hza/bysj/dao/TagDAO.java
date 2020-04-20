@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TagDAO extends JpaRepository<Tag,Integer>{
 
     //int countByName(String userName);
+    Tag findByTag(String tag);
 }

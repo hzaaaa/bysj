@@ -5,10 +5,12 @@ import com.hza.bysj.dao.AnswerDAO;
 import com.hza.bysj.dao.QuestionDAO;
 import com.hza.bysj.pojo.Answer;
 import com.hza.bysj.pojo.Question;
+import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +20,15 @@ public class AnswerServiceImpl implements IAnswerService {
     private QuestionDAO questionDAO;
     @Autowired
     private AnswerDAO answerDAO;
+
+    private Comparator<Answer> c = new Comparator<Answer>() {
+        @Override
+        public int compare(Answer a1, Answer a2) {
+            if(a1.getLike_count()-a1.getDislike_count()>a2.getLike_count()-a2.getDislike_count())
+                return 1;
+            else return -1;
+        }
+    };
 
     @Override
     public ServerResponse<Answer> answer_question(Integer question_id, User user, String answer) {
@@ -88,12 +99,15 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
-    public ServerResponse<List<Answer>> push_answer(User user) {
-        return null;
+    public ServerResponse<List<Answer>> push_answer() {
+        List<Answer> answerlist = answerDAO.findAll();
+        answerlist.sort(c);
+        return ServerResponse.createBySuccess(answerlist);
     }
 
     @Override
     public ServerResponse<List<Answer>> ManagelistAnswer(User user) {
-        return null;
+        List<Answer> answerlist = answerDAO.findAll();
+        return ServerResponse.createBySuccess(answerlist);
     }
 }

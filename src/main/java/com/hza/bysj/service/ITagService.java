@@ -7,7 +7,7 @@ import com.hza.bysj.pojo.User;
 import java.util.List;
 
 public interface ITagService {
-    ServerResponse<Tag> add_tag(User user, Tag tag);
+    ServerResponse<Tag> add_tag(User user, String tag);
     ServerResponse<String> delete_tag(User user, Integer tag_id);
     ServerResponse<List<Tag>> listtagByUser(User user);
 

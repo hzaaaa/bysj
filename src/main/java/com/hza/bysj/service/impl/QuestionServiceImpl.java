@@ -7,9 +7,11 @@ import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service("iQuestion")
 public class QuestionServiceImpl implements IQuestionService {
 
     @Autowired
@@ -92,8 +94,9 @@ public class QuestionServiceImpl implements IQuestionService {
 
         LinkedList<Question> questionslist = new LinkedList<>();
         List<Tag> taglist = user.getTaglist();
+        Iterator<Tag> taglistiterator = taglist.iterator();
         for(int i=0;i<taglist.size();i++){
-            List<Question> questions = questionDAO.findAllByTag_id(taglist.get(i).getId());
+            List<Question> questions = questionDAO.findAllByTag_id(taglistiterator.next().getId());
             Iterator<Question> iterator = questions.iterator();
             for(int j=0;j<questions.size();j++){
                 questionslist.add(iterator.next());
@@ -115,5 +118,10 @@ public class QuestionServiceImpl implements IQuestionService {
     public ServerResponse<List<Question>> ManagelistQuestion(User user) {
         List<Question> questions = questionDAO.findAllByOrderByDateDesc();
         return ServerResponse.createBySuccess(questions);
+    }
+
+    @Override
+    public ServerResponse<List<Question>> searchQuestion(String question) {
+        return null;
     }
 }

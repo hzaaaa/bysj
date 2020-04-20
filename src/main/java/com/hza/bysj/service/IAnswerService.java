@@ -14,7 +14,7 @@ public interface IAnswerService {
     ServerResponse<List<Answer>> list_answerByUser(User user);
     ServerResponse<List<Answer>> list_answerByQuestionId(Integer question_id);
     ServerResponse<Answer> look_answer(Integer answer_id);
-    ServerResponse<List<Answer>>push_answer(User user);
+    ServerResponse<List<Answer>>push_answer();
 
     ServerResponse<List<Answer>> ManagelistAnswer(User user);
 }

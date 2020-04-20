@@ -19,4 +19,6 @@ public interface IQuestionService {
 
     ServerResponse<List<Question>> ManagelistQuestion(User user);
 
+    ServerResponse<List<Question>> searchQuestion(String question);
+
 }
