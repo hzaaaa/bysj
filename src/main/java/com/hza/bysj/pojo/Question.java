@@ -3,6 +3,7 @@ package com.hza.bysj.pojo;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "question")
@@ -23,6 +24,17 @@ public class Question {
     private String question_title;
     @Column(name = "question_explain")
     private String question_explain;
+
+    @OneToMany(mappedBy = "question_id",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    private List<Answer> answerlist;
+
+    public List<Answer> getAnswerlist() {
+        return answerlist;
+    }
+
+    public void setAnswerlist(List<Answer> answerlist) {
+        this.answerlist = answerlist;
+    }
 
     public int getId() {
         return id;

@@ -107,12 +107,13 @@ public class QuestionServiceImpl implements IQuestionService {
 
     @Override
     public ServerResponse<List<Question>> push_questionsByDate() {
-        questionDAO.f
-        return null;
+        List<Question> questions = questionDAO.findAllByOrderByDateDesc();
+        return ServerResponse.createBySuccess(questions);
     }
 
     @Override
     public ServerResponse<List<Question>> ManagelistQuestion(User user) {
-        return null;
+        List<Question> questions = questionDAO.findAllByOrderByDateDesc();
+        return ServerResponse.createBySuccess(questions);
     }
 }

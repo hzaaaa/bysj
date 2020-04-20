@@ -28,6 +28,17 @@ public class User {
     private List<Tag> taglist;
 
 
+    @OneToMany(mappedBy = "user_id",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    private List<Answer> answerlist;
+
+    public List<Answer> getAnswerlist() {
+        return answerlist;
+    }
+
+    public void setAnswerlist(List<Answer> answerlist) {
+        this.answerlist = answerlist;
+    }
+
     public List<Tag> getTaglist() {
         return taglist;
     }
