@@ -25,7 +25,7 @@ public class QuestionController {
 
     @RequestMapping(value = "ask.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<Question> ask_question(String question,HttpSession session){
+    public ServerResponse<Question> ask_question(String question_title,String question_explain,HttpSession session){
 
 
 
