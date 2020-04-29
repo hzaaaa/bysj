@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -56,10 +58,12 @@ public class UserController {
 
     @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session){
+    public ServerResponse<List<User>> getUserInfo(HttpSession session){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
         if(user != null){
-            return ServerResponse.createBySuccess(user);
+            return ServerResponse.createBySuccess(users);
         }
         return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
     }
@@ -67,15 +71,15 @@ public class UserController {
 
     @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetGetQuestion(String username){
-        return iUserService.selectQuestion(username);
+    public ServerResponse<String> forgetGetQuestion(@RequestBody User username){
+        return iUserService.selectQuestion(username.getName());
     }
 
 
     @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer){
-        return iUserService.checkAnswer(username,question,answer);
+    public ServerResponse<String> forgetCheckAnswer(@RequestBody User user){
+        return iUserService.checkAnswer(user.getName(),user.getPassword_question(),user.getPassword_answer());
     }
 
 

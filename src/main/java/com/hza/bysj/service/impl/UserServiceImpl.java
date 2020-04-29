@@ -80,10 +80,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse<String> checkAnswer(String username,String question,String answer){
-        //int resultCount =
+
         User result =      UserDAO.findByName(username);
         if(result.getPassword_question().equals(question)&&result.getPassword_answer().equals(answer)){
-            //说明问题及问题答案是这个用户的,并且是正确的
             String forgetToken = UUID.randomUUID().toString();
             token.put(username,forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
@@ -130,8 +129,7 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse<User> updateInformation(User user){
 
-        User updateUser=UserDAO.findByName(user.getName());
-
+        User updateUser=UserDAO.findById(user.getId()).get();
         updateUser.setPassword_question(user.getPassword_question());
         updateUser.setPassword_answer(user.getPassword_answer());
         updateUser.setRole(user.getRole());
