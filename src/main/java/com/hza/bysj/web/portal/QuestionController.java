@@ -28,7 +28,7 @@ public class QuestionController {
     public ServerResponse<Question> ask_question(String question_title,String question_explain,HttpSession session){
 
 
-
+        return null;
     }
 
 }

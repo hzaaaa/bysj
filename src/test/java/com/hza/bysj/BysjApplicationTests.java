@@ -17,14 +17,14 @@ class BysjApplicationTests {
     TagDAO tagDAO;
     @Autowired
     UserDAO userDAO;
-    @Test
+    //@Test
     void savetag() {
         Tag tag = new Tag();
         tag.setId(1);
         tag.setTag("计算机");
         tagDAO.save(tag);
     }
-    @Test
+    //@Test
     void saveuser(){
         ArrayList<Tag> objects = new ArrayList<>();
         objects.add(tagDAO.findById(1).get());

@@ -1,8 +1,11 @@
 package com.hza.bysj.pojo;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "user")
 public class User {
@@ -28,7 +31,7 @@ public class User {
     private List<Tag> taglist;
 
 
-    @OneToMany(mappedBy = "user_id",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Answer> answerlist;
 
     public List<Answer> getAnswerlist() {

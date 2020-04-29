@@ -1,5 +1,7 @@
 package com.hza.bysj.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class Tag {
 
     @Column(name = "tag")
     private  String tag;
+
+    @JsonIgnore
     @ManyToMany(mappedBy = "taglist")
     private List<User> userlist;
 

@@ -1,5 +1,7 @@
 package com.hza.bysj.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
@@ -12,12 +14,17 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
     @Column(name = "date")
     private Date date;
     @Column(name = "question_title")
@@ -25,7 +32,7 @@ public class Question {
     @Column(name = "question_explain")
     private String question_explain;
 
-    @OneToMany(mappedBy = "question_id",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "question",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Answer> answerlist;
 
     public List<Answer> getAnswerlist() {

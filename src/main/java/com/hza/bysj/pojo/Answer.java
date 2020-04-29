@@ -1,5 +1,7 @@
 package com.hza.bysj.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,12 +13,16 @@ public class Answer {
     @Column(name = "id")
     private int id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
     @Column(name = "date")
     private Date date;
     @Column(name = "answer")
