@@ -20,6 +20,17 @@ public class Tag {
     @ManyToMany(mappedBy = "taglist")
     private List<User> userlist;
 
+    @OneToMany(mappedBy = "tag",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    private List<Question> questionslist;
+
+    public List<Question> getQuestionslist() {
+        return questionslist;
+    }
+
+    public void setQuestionslist(List<Question> questionslist) {
+        this.questionslist = questionslist;
+    }
+
     public List<User> getUserlist() {
         return userlist;
     }

@@ -9,11 +9,13 @@ import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+@Service("iAnswerService")
 public class AnswerServiceImpl implements IAnswerService {
 
     @Autowired

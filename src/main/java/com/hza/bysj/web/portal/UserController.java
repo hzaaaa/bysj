@@ -27,7 +27,7 @@ public class UserController {
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> login( @RequestBody User user, HttpSession session){
-        System.out.println(user.getName());//+password);
+        System.out.println(user.getName());
         ServerResponse<User> response = iUserService.login(user.getName(),user.getPassword());
         if(response.isSuccess()){
             session.setAttribute(Const.CURRENT_USER,response.getData());
@@ -85,8 +85,8 @@ public class UserController {
 
     @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetRestPassword(String username,String passwordNew,String forgetToken){
-        return iUserService.forgetResetPassword(username,passwordNew,forgetToken);
+    public ServerResponse<String> forgetRestPassword(@RequestBody Map map){
+        return iUserService.forgetResetPassword((String)map.get("name"),(String)map.get("password"),(String)map.get("token"));
     }
 
 

@@ -2,6 +2,7 @@ package com.hza.bysj.service.impl;
 
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.dao.QuestionDAO;
+import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
@@ -16,6 +17,10 @@ public class QuestionServiceImpl implements IQuestionService {
 
     @Autowired
     private QuestionDAO questionDAO;
+
+    @Autowired
+    private UserDAO userDAO;
+
 
     private Comparator<Question> c = new Comparator<Question>() {
         @Override
@@ -33,6 +38,13 @@ public class QuestionServiceImpl implements IQuestionService {
         question1.setQuestion_explain(question_explain);
         question1.setTag(tag);
         Question save = questionDAO.save(question1);
+
+        user.getQuestionlist().add(save);
+        Optional<User> byId = userDAO.findById(user.getId());
+        byId.get().setTaglist(user.getTaglist());
+        byId.get().setQuestionlist(user.getQuestionlist());
+
+        userDAO.save(byId.get());
         return ServerResponse.createBySuccess("提问成功",save);
     }
 

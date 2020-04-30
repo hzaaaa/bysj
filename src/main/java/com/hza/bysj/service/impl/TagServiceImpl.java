@@ -6,10 +6,13 @@ import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.ITagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+@Service("iTagService")
 public class TagServiceImpl implements ITagService {
     @Autowired
     TagDAO tagDAO;
@@ -20,6 +23,15 @@ public class TagServiceImpl implements ITagService {
             Tag tag1 = new Tag();
             tag1.setTag(tag);
             newtag=tagDAO.save(tag1);
+            user.getTaglist().add(newtag);
+        }else{
+            Iterator<Tag> iterator = user.getTaglist().iterator();
+            while (iterator.hasNext()){
+                if(iterator.next().getId()==newtag.getId()){
+                    return ServerResponse.createBySuccess(newtag);
+                }
+            }
+            user.getTaglist().add(newtag);
         }
         return ServerResponse.createBySuccess(newtag);
     }
