@@ -33,6 +33,7 @@ public class TagServiceImpl implements ITagService {
             }
             user.getTaglist().add(newtag);
         }
+
         return ServerResponse.createBySuccess(newtag);
     }
 

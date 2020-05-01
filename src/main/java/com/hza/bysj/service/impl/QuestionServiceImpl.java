@@ -39,10 +39,8 @@ public class QuestionServiceImpl implements IQuestionService {
         question1.setTag(tag);
         Question save = questionDAO.save(question1);
 
-        user.getQuestionlist().add(save);
         Optional<User> byId = userDAO.findById(user.getId());
-        byId.get().setTaglist(user.getTaglist());
-        byId.get().setQuestionlist(user.getQuestionlist());
+        byId.get().setTaglist(user.getTaglist());//需要重构
 
         userDAO.save(byId.get());
         return ServerResponse.createBySuccess("提问成功",save);
@@ -52,10 +50,16 @@ public class QuestionServiceImpl implements IQuestionService {
     public ServerResponse<String> delete_question(Integer question_id, User user) {
 
         Optional<Question> byId = questionDAO.findById(question_id);
+
+        if(byId == null)return ServerResponse.createByErrorMessage("该问题不存在");
         Question question = byId.get();
-        if(question==null)return ServerResponse.createByErrorMessage("该问题不存在");
         if(question.getUser().getId()==user.getId()){
             questionDAO.delete(question);
+
+            /*User user1 = userDAO.findById(user.getId()).get();
+            user1.setPassword(null);
+            user=user1;*/
+
             return ServerResponse.createBySuccessMessage("删除成功");
         }
         return ServerResponse.createByErrorMessage("该用户无权删除");
@@ -65,8 +69,8 @@ public class QuestionServiceImpl implements IQuestionService {
     public ServerResponse<Question> update_question(Integer question_id, User user, String question_explain) {
 
         Optional<Question> byId = questionDAO.findById(question_id);
+        if(byId==null)return ServerResponse.createByErrorMessage("该问题不存在");
         Question question1 = byId.get();
-        if(question1==null)return ServerResponse.createByErrorMessage("该问题不存在");
         if(question1.getUser().getId()==user.getId()){
             question1.setQuestion_explain(question_explain);
             Question save = questionDAO.save(question1);
@@ -95,8 +99,8 @@ public class QuestionServiceImpl implements IQuestionService {
     @Override
     public ServerResponse<Question> look_question(Integer question_id) {
         Optional<Question> byId = questionDAO.findById(question_id);
+        if(byId==null)return ServerResponse.createByErrorMessage("无此问题");
         Question question = byId.get();
-        if(question==null)return ServerResponse.createByErrorMessage("无此问题");
         return ServerResponse.createBySuccess(question);
 
     }
