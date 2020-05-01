@@ -20,7 +20,7 @@ public class Question {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;

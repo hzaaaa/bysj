@@ -39,10 +39,6 @@ public class QuestionServiceImpl implements IQuestionService {
         question1.setTag(tag);
         Question save = questionDAO.save(question1);
 
-        Optional<User> byId = userDAO.findById(user.getId());
-        byId.get().setTaglist(user.getTaglist());//需要重构
-
-        userDAO.save(byId.get());
         return ServerResponse.createBySuccess("提问成功",save);
     }
 

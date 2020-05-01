@@ -25,8 +25,6 @@ import java.util.Map;
 @RequestMapping("/question/")
 public class QuestionController {
     //搜索问题
-    //提出问题
-    //问题管理
     //获取推送问题
 
     @Autowired
@@ -72,8 +70,21 @@ public class QuestionController {
 
     @RequestMapping(value = "getquestion_byId.do/{id}")
     @ResponseBody
-    public ServerResponse<Question> getquestion_byId(HttpSession session,@PathVariable("id")Integer id){
-        return null;
+    public ServerResponse<Question> getquestion_byId(@PathVariable("id")Integer id){
+        return iQuestionService.look_question(id);
     }
+
+    @RequestMapping(value = "update_question.do")
+    @ResponseBody
+    public ServerResponse<Question> update_question(@RequestBody Map map, HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        ServerResponse<Question> questionServerResponse = iQuestionService.update_question((Integer) map.get("id"), user, (String) map.get("question_explain"));
+        return questionServerResponse;
+
+
+    }
+
 
 }

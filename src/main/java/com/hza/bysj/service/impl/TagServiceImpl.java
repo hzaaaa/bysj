@@ -2,6 +2,7 @@ package com.hza.bysj.service.impl;
 
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.dao.TagDAO;
+import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.ITagService;
@@ -16,6 +17,8 @@ import java.util.Optional;
 public class TagServiceImpl implements ITagService {
     @Autowired
     TagDAO tagDAO;
+    @Autowired
+    UserDAO userDAO;
     @Override
     public ServerResponse<Tag> add_tag(User user, String tag) {
         Tag newtag = tagDAO.findByTag(tag);
@@ -33,6 +36,10 @@ public class TagServiceImpl implements ITagService {
             }
             user.getTaglist().add(newtag);
         }
+
+        Optional<User> byId = userDAO.findById(user.getId());
+        byId.get().setTaglist(user.getTaglist());//需要重构
+        userDAO.save(byId.get());
 
         return ServerResponse.createBySuccess(newtag);
     }
