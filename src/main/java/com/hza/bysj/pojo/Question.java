@@ -13,7 +13,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @JsonIgnore
     @ManyToOne
@@ -43,7 +43,7 @@ public class Question {
         this.answerlist = answerlist;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
