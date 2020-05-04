@@ -1,15 +1,24 @@
 package com.hza.bysj.service.impl;
 
+import com.hza.bysj.common.CodeCache;
 import com.hza.bysj.common.ServerResponse;
+import com.hza.bysj.common.util;
 import com.hza.bysj.dao.QuestionDAO;
 import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IQuestionService;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service("iQuestion")
@@ -39,6 +48,22 @@ public class QuestionServiceImpl implements IQuestionService {
         question1.setTag(tag);
         Question save = questionDAO.save(question1);
 
+        IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);
+        IndexWriter writer = null;
+        try {
+            writer = new IndexWriter(CodeCache.index, config);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        util.addDoc(writer,save);
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return ServerResponse.createBySuccess("提问成功",save);
     }
 
@@ -52,10 +77,16 @@ public class QuestionServiceImpl implements IQuestionService {
         if(question.getUser().getId()==user.getId()){
             questionDAO.delete(question);
 
-            /*User user1 = userDAO.findById(user.getId()).get();
-            user1.setPassword(null);
-            user=user1;*/
-
+            IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);
+            IndexWriter indexWriter = null;
+            try {
+                indexWriter = new IndexWriter(CodeCache.index, config);
+                indexWriter.deleteDocuments(new Term("id", question.getId().toString()));
+                indexWriter.commit();
+                indexWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return ServerResponse.createBySuccessMessage("删除成功");
         }
         return ServerResponse.createByErrorMessage("该用户无权删除");
@@ -70,6 +101,24 @@ public class QuestionServiceImpl implements IQuestionService {
         if(question1.getUser().getId()==user.getId()){
             question1.setQuestion_explain(question_explain);
             Question save = questionDAO.save(question1);
+
+            IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);
+            IndexWriter indexWriter = null;
+            try {
+                indexWriter = new IndexWriter(CodeCache.index, config);
+                Document doc = new Document();
+                doc.add(new TextField("id",save.getId().toString(), Field.Store.YES));
+                doc.add(new TextField("question_title", save.getQuestion_title(), Field.Store.YES));
+                doc.add(new TextField("question_explain", save.getQuestion_explain(), Field.Store.YES));
+
+                indexWriter.updateDocument(new Term("id", save.getId().toString()), doc );
+                indexWriter.commit();
+                indexWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
             return ServerResponse.createBySuccess("更新成功",save);
         }
         return ServerResponse.createByErrorMessage("该用户无权更新");

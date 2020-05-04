@@ -86,5 +86,10 @@ public class QuestionController {
 
     }
 
+    @RequestMapping(value = "search.do")
+    @ResponseBody
+    public ServerResponse<List<Question>>search(@RequestBody Question question)  {
+        return util.search(question.getQuestion_explain());
+    }
 
 }

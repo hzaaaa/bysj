@@ -3,6 +3,8 @@ package com.hza.bysj.common;
 import com.hza.bysj.dao.QuestionDAO;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.service.IQuestionService;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ public class CodeCache {
     public static Directory index = new RAMDirectory();
     public static IKAnalyzer analyzer = new IKAnalyzer();
 
+
     @Autowired
     private QuestionDAO questionDAO;
 
     @PostConstruct
     public void init() {
+
         System.out.println("test init");
         List<Question> questionList = questionDAO.findAll();
         try {

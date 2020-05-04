@@ -33,16 +33,6 @@ public class User {
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Answer> answerlist;
 
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-    private List<Question> questionlist;
-
-    public List<Question> getQuestionlist() {
-        return questionlist;
-    }
-
-    public void setQuestionlist(List<Question> questionlist) {
-        this.questionlist = questionlist;
-    }
 
     public List<Answer> getAnswerlist() {
         return answerlist;

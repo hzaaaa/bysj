@@ -61,16 +61,6 @@ class BysjApplicationTests {
     }
     @Test
     void testsearcher() throws Exception {
-        String keyword = "砸伤";
-        Query query = new QueryParser("question_explain", CodeCache.analyzer).parse(keyword);
 
-        //  搜索
-        IndexReader reader = DirectoryReader.open(CodeCache.index);
-        IndexSearcher searcher = new IndexSearcher(reader);
-        int numberPerPage = 1000;
-        System.out.printf("查询关键字是：\"%s\"%n",keyword);
-        ScoreDoc[] hits = searcher.search(query, numberPerPage).scoreDocs;
-
-        util.showSearchResults(searcher,hits,query,CodeCache.analyzer);
     }
 }

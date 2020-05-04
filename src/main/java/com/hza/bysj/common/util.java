@@ -2,9 +2,12 @@ package com.hza.bysj.common;
 
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.User;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.util.Version;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.apache.lucene.analysis.TokenStream;
@@ -29,6 +32,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class util {
@@ -49,31 +53,77 @@ public class util {
         writer.close();
         return index;
     }
-    private static void addDoc(IndexWriter w, Question question) throws IOException {
+    public static void addDoc(IndexWriter w, Question question)  {
         Document doc = new Document();
         System.out.println(question.getQuestion_explain());
         doc.add(new TextField("id", question.getId().toString(), Field.Store.YES));
         doc.add(new TextField("question_title", question.getQuestion_title(), Field.Store.YES));
         doc.add(new TextField("question_explain", question.getQuestion_explain(), Field.Store.YES));
-        w.addDocument(doc);
+        try {
+            w.addDocument(doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    public static void showSearchResults(IndexSearcher searcher, ScoreDoc[] hits, Query query, IKAnalyzer analyzer)
-            throws Exception {
+    public static ServerResponse<List<Question>> search(String keyword)  {
+        Query query = null;
+        try {
+            query = new QueryParser("question_explain", CodeCache.analyzer).parse(keyword);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        IndexReader reader = null;
+        try {
+            reader = DirectoryReader.open(CodeCache.index);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        IndexSearcher searcher = new IndexSearcher(reader);
+        int numberPerPage = 1000;
+        System.out.printf("查询关键字是：\"%s\"%n",keyword);
+        ScoreDoc[] hits = new ScoreDoc[0];
+        try {
+            hits = searcher.search(query, numberPerPage).scoreDocs;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ServerResponse<List<Question>> listServerResponse = showSearchResults(searcher, hits, query, CodeCache.analyzer);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return listServerResponse;
+
+    }
+    private static ServerResponse<List<Question>> showSearchResults(IndexSearcher searcher, ScoreDoc[] hits, Query query, IKAnalyzer analyzer)
+             {
         System.out.println("找到 " + hits.length + " 个命中.");
         System.out.println("序号\t匹配度得分\t结果");
+
+        List<Question> questions = new ArrayList<>();
         for (int i = 0; i < hits.length; ++i) {
             ScoreDoc scoreDoc= hits[i];
             int docId = scoreDoc.doc;
-            Document d = searcher.doc(docId);
+            Document d = null;
+            try {
+                d = searcher.doc(docId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             List<IndexableField> fields = d.getFields();
 
+
             System.out.print((i + 1));
-            System.out.print("\t" + scoreDoc.score);
-            for (IndexableField f : fields) {
-                System.out.print("\t" + d.get(f.name()));
-            }
-            System.out.println();
+            Question question = new Question();
+            question.setQuestion_title(d.get("question_title"));
+            question.setQuestion_explain(d.get("question_explain"));
+            questions.add(question);
+
+
         }
+        return ServerResponse.createBySuccess(questions);
     }
 
 }
