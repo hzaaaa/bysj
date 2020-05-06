@@ -4,6 +4,7 @@ import com.hza.bysj.common.CodeCache;
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.common.util;
 import com.hza.bysj.dao.QuestionDAO;
+import com.hza.bysj.dao.TagDAO;
 import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.Tag;
@@ -16,6 +17,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,6 +34,9 @@ public class QuestionServiceImpl implements IQuestionService {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private TagDAO tagDAO;
 
 
     private Comparator<Question> c = new Comparator<Question>() {
@@ -151,10 +159,11 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public ServerResponse<List<Question>> push_questionsByUser(User user) {
+    public ServerResponse<List<Question>> pull_questionsByUser(User user) {
 
+        User save = userDAO.findById(user.getId()).get();
         LinkedList<Question> questionslist = new LinkedList<>();
-        List<Tag> taglist = user.getTaglist();
+        List<Tag> taglist = save.getTaglist();
         Iterator<Tag> taglistiterator = taglist.iterator();
         for(int i=0;i<taglist.size();i++){
             List<Question> questions = questionDAO.findAllByTag_id(taglistiterator.next().getId());
@@ -170,9 +179,14 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public ServerResponse<List<Question>> push_questionsByDate() {
-        List<Question> questions = questionDAO.findAllByOrderByDateDesc();
-        return ServerResponse.createBySuccess(questions);
+    public ServerResponse<Page<Question>> pull_questionsByDate(Integer page ,Integer size) {
+        int start = page;
+        start = start<0?0:start;
+        Sort sort =  Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(start, size, sort);
+        Page<Question> page0 =questionDAO.findAll(pageable);
+
+        return ServerResponse.createBySuccess(page0);
     }
 
     @Override
@@ -181,8 +195,5 @@ public class QuestionServiceImpl implements IQuestionService {
         return ServerResponse.createBySuccess(questions);
     }
 
-    @Override
-    public ServerResponse<List<Question>> searchQuestion(String question) {
-        return null;
-    }
+
 }

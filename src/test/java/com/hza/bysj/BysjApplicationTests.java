@@ -2,8 +2,10 @@ package com.hza.bysj;
 
 import com.hza.bysj.common.CodeCache;
 import com.hza.bysj.common.util;
+import com.hza.bysj.dao.AnswerDAO;
 import com.hza.bysj.dao.TagDAO;
 import com.hza.bysj.dao.UserDAO;
+import com.hza.bysj.pojo.Answer;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 class BysjApplicationTests {
@@ -41,6 +44,9 @@ class BysjApplicationTests {
     TagDAO tagDAO;
     @Autowired
     UserDAO userDAO;
+
+    @Autowired
+    AnswerDAO answerDAO;
 
     @Autowired
     CodeCache codeCache;
@@ -61,6 +67,9 @@ class BysjApplicationTests {
     }
     @Test
     void testsearcher() throws Exception {
-
+        User user = new User();
+        user.setId(1);
+        List<Answer> byUser = answerDAO.findByUser(user);
+        System.out.println(byUser.remove(0).getAnswer());
     }
 }

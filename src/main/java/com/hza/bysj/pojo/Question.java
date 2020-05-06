@@ -32,17 +32,6 @@ public class Question {
     @Column(name = "question_explain")
     private String question_explain;
 
-    @OneToMany(mappedBy = "question",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-    private List<Answer> answerlist;
-
-    public List<Answer> getAnswerlist() {
-        return answerlist;
-    }
-
-    public void setAnswerlist(List<Answer> answerlist) {
-        this.answerlist = answerlist;
-    }
-
     public Integer getId() {
         return id;
     }

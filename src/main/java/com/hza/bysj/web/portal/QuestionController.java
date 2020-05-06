@@ -10,6 +10,7 @@ import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IQuestionService;
 import com.hza.bysj.service.ITagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/question/")
 public class QuestionController {
-    //搜索问题
     //获取推送问题
 
     @Autowired
@@ -88,8 +88,24 @@ public class QuestionController {
 
     @RequestMapping(value = "search.do")
     @ResponseBody
-    public ServerResponse<List<Question>>search(@RequestBody Question question)  {
+    public ServerResponse<List<Question>> search(@RequestBody Question question)  {
         return util.search(question.getQuestion_explain());
+    }
+
+    @RequestMapping(value = "pull_questionsByUser.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<List<Question>> pull_questionsByUser (HttpSession session)  {
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iQuestionService.pull_questionsByUser(user);
+    }
+    @RequestMapping(value = "pull_questionsByDate.do/{page}/{size}")
+    @ResponseBody
+    public ServerResponse<Page<Question>> pull_questionsByDate (@PathVariable("page")Integer page, @PathVariable("size")Integer size,HttpSession session)  {
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+        return iQuestionService.pull_questionsByDate(page,size);
     }
 
 }

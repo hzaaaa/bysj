@@ -44,8 +44,8 @@ public class AnswerServiceImpl implements IAnswerService {
         answer1.setLike_count(0);
         answer1.setQuestion(question);
         answer1.setUser(user);
-        answerDAO.save(answer1);
-        return null;
+        Answer save = answerDAO.save(answer1);
+        return ServerResponse.createBySuccess(save);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AnswerServiceImpl implements IAnswerService {
 
     @Override
     public ServerResponse<List<Answer>> list_answerByUser(User user) {
-        List<Answer> answerlist = user.getAnswerlist();
+        List<Answer> answerlist = answerDAO.findByUser(user);
         return ServerResponse.createBySuccess(answerlist);
     }
 
@@ -87,7 +87,7 @@ public class AnswerServiceImpl implements IAnswerService {
         Question question = questionDAO.findById(question_id).get();
         if(question==null)
             return ServerResponse.createByErrorMessage("问题不存在");
-        List<Answer> answerlist = question.getAnswerlist();
+        List<Answer> answerlist = answerDAO.findByQuestion(question);
         return ServerResponse.createBySuccess(answerlist);
     }
 

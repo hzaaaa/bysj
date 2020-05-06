@@ -27,6 +27,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> login(String username, String password) {
+        System.out.println(password);
         int resultCount = UserDAO.countByName(username);
         if(resultCount == 0 ){
             return ServerResponse.createByErrorMessage("用户名不存在");

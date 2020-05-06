@@ -1,5 +1,6 @@
 package com.hza.bysj.pojo;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class User {
     @Column(name = "user_name")
     private String name;
 
+
     @Column(name = "password")
     private  String password;
     @Column(name = "password_question")
@@ -30,17 +32,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> taglist;
 
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-    private List<Answer> answerlist;
-
-
-    public List<Answer> getAnswerlist() {
-        return answerlist;
-    }
-
-    public void setAnswerlist(List<Answer> answerlist) {
-        this.answerlist = answerlist;
-    }
 
     public List<Tag> getTaglist() {
         return taglist;
