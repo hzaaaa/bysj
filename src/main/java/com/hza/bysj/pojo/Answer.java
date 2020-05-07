@@ -14,6 +14,7 @@ public class Answer {
     private int id;
 
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

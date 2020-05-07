@@ -112,4 +112,5 @@ public class AnswerServiceImpl implements IAnswerService {
         List<Answer> answerlist = answerDAO.findAll();
         return ServerResponse.createBySuccess(answerlist);
     }
+
 }

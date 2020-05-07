@@ -37,6 +37,45 @@ public class AnswerController {
         System.out.println(id);
         return  iAnswerService.list_answerByQuestionId(id);
     }
+    @RequestMapping(value = "my_answers.do")
+    @ResponseBody
+    public ServerResponse<List<Answer>> my_answers(HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iAnswerService.list_answerByUser(user);
+    }
+
+    @RequestMapping(value = "deleteById.do/{id}")
+    @ResponseBody
+    public ServerResponse<String> deleteAnswerById(@PathVariable("id")Integer id,HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iAnswerService.delete_answer(id,user);
+    }
+
+    @RequestMapping(value = "updateAnswer.do")
+    @ResponseBody
+    public ServerResponse<Answer> updateAnswer(HttpSession session,@RequestBody Answer answer){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iAnswerService.update_answer(answer.getId(),user,answer.getAnswer());
+    }
+
+    @RequestMapping(value = "look_answerById.do/{id}")
+    @ResponseBody
+    public ServerResponse<Answer> lookAnswerById(@PathVariable("id")Integer id){
+        return iAnswerService.look_answer(id);
+    }
+
+    @RequestMapping(value = "push_answer")
+    @ResponseBody
+    public ServerResponse<List<Answer>> push_answer(){
+        return iAnswerService.push_answer();
+    }
+
 
 
 }
