@@ -6,6 +6,8 @@ import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.pojo.Answer;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IAnswerService;
+import com.hza.bysj.service.IInviteService;
+import com.hza.bysj.service.ILikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ public class AnswerController {
     //获取推送回答
     @Autowired
     private IAnswerService iAnswerService;
+    @Autowired
+    private ILikeService iLikeService;
 
     @RequestMapping(value = "add_answer.do",method = RequestMethod.POST)
     @ResponseBody
@@ -75,6 +79,24 @@ public class AnswerController {
     public ServerResponse<List<Answer>> push_answer(){
         return iAnswerService.push_answer();
     }
+
+    @RequestMapping(value = "like/{id}")
+    @ResponseBody
+    public ServerResponse<String> like(HttpSession session,@PathVariable("id")Integer answer_id){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iLikeService.like(user,answer_id);
+    }
+    @RequestMapping(value = "dislike/{id}")
+    @ResponseBody
+    public ServerResponse<String> dislike(HttpSession session,@PathVariable("id")Integer answer_id){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iLikeService.dislike(user,answer_id);
+    }
+
 
 
 

@@ -1,13 +1,17 @@
 package com.hza.bysj;
 
 import com.hza.bysj.common.CodeCache;
+import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.common.util;
 import com.hza.bysj.dao.AnswerDAO;
 import com.hza.bysj.dao.TagDAO;
 import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.Answer;
+import com.hza.bysj.pojo.Invite;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
+import com.hza.bysj.service.IInviteService;
+import com.hza.bysj.service.ILikeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +35,7 @@ import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.springframework.stereotype.Service;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
@@ -49,27 +54,25 @@ class BysjApplicationTests {
     AnswerDAO answerDAO;
 
     @Autowired
+    private ILikeService iLikeService;
+
+    @Autowired
+    private IInviteService iInviteService;
+
+    @Autowired
     CodeCache codeCache;
-    //@Test
-    void savetag() {
-        Tag tag = new Tag();
-        tag.setId(1);
-        tag.setTag("计算机");
-        tagDAO.save(tag);
-    }
-    //@Test
-    void saveuser(){
-        ArrayList<Tag> objects = new ArrayList<>();
-        objects.add(tagDAO.findById(1).get());
-        User user = new User();
-        user.setTaglist(objects);
-        userDAO.save(user);
-    }
+
     @Test
     void testsearcher() throws Exception {
         User user = new User();
         user.setId(1);
-        List<Answer> byUser = answerDAO.findByUser(user);
-        System.out.println(byUser.remove(0).getAnswer());
+        String invitee = "test";
+        Integer question_id = 10;
+
+        iInviteService.invite_answer(user,invitee,question_id);
+
+        user.setId(2);
+        ServerResponse<List<Invite>> listServerResponse = iInviteService.look_myInvitedList(user);
+        System.out.println(listServerResponse.getData().remove(0).getInviter().getName());
     }
 }

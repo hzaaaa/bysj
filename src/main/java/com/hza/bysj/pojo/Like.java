@@ -5,9 +5,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
+
 @Entity
-@Table(name = "like")
+@Table(name = "like_table")
 public class Like {
 
     @Id
@@ -23,8 +23,8 @@ public class Like {
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @Column(name = "like")
-    private Integer like;
+    @Column(name = "islike")
+    private Integer islike;
 
     public int getId() {
         return id;
@@ -50,11 +50,11 @@ public class Like {
         this.answer = answer;
     }
 
-    public Integer getLike() {
-        return like;
+    public Integer getIslike() {
+        return islike;
     }
 
-    public void setLike(Integer like) {
-        this.like = like;
+    public void setIslike(Integer islike) {
+        this.islike = islike;
     }
 }

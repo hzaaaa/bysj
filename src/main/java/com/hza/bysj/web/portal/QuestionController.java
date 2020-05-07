@@ -4,9 +4,11 @@ package com.hza.bysj.web.portal;
 import com.hza.bysj.common.Const;
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.common.util;
+import com.hza.bysj.pojo.Invite;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
+import com.hza.bysj.service.IInviteService;
 import com.hza.bysj.service.IQuestionService;
 import com.hza.bysj.service.ITagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,10 @@ public class QuestionController {
 
     @Autowired
     private IQuestionService iQuestionService;
-
     @Autowired
     private ITagService iTagService;
+    @Autowired
+    private IInviteService iInviteService;
 
     @RequestMapping(value = "ask.do",method = RequestMethod.POST)
     @ResponseBody
@@ -107,5 +110,25 @@ public class QuestionController {
         if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
         return iQuestionService.pull_questionsByDate(page,size);
     }
+
+    @RequestMapping(value = "invite.do")
+    @ResponseBody
+    public ServerResponse<Invite> invite(@RequestBody Map map,HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iInviteService.invite_answer(user, (String) map.get("invitee"), (Integer) map.get("question_id"));
+    }
+
+    @RequestMapping(value = "my_invitedList.do")
+    @ResponseBody
+    public ServerResponse<List<Invite>> my_invitedList(HttpSession session) {
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iInviteService.look_myInvitedList(user);
+
+    }
+
 
 }
