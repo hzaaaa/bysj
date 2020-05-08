@@ -33,12 +33,36 @@ public class Question {
     @Column(name = "question_explain")
     private String question_explain;
 
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="question")
+    private List<Answer> answerList;
+
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="question")
+    private List<Invite> inviteList;
+
+    public List<Invite> getInviteList() {
+        return inviteList;
+    }
+
+    public void setInviteList(List<Invite> inviteList) {
+        this.inviteList = inviteList;
+    }
+
     public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<Answer> getAnswerList() {
+        return answerList;
+    }
+
+    public void setAnswerList(List<Answer> answerList) {
+        this.answerList = answerList;
     }
 
     public User getUser() {

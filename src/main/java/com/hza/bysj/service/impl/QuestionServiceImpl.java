@@ -83,6 +83,7 @@ public class QuestionServiceImpl implements IQuestionService {
         if(byId == null)return ServerResponse.createByErrorMessage("该问题不存在");
         Question question = byId.get();
         if(question.getUser().getId()==user.getId()){
+
             questionDAO.delete(question);
 
             IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);

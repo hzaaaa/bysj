@@ -75,4 +75,10 @@ class BysjApplicationTests {
         ServerResponse<List<Invite>> listServerResponse = iInviteService.look_myInvitedList(user);
         System.out.println(listServerResponse.getData().remove(0).getInviter().getName());
     }
+    @Test
+    void testlike(){
+        User user = new User();
+        user.setId(1);
+        iLikeService.like(user,2);
+    }
 }

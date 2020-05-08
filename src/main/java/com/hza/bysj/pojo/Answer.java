@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "answer")
@@ -14,7 +15,7 @@ public class Answer {
     private int id;
 
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -33,6 +34,18 @@ public class Answer {
     @Column(name = "dislike_count")
     private Integer dislike_count;
 
+
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="answer")
+    private List<Like> likeList;
+
+    public List<Like> getLikeList() {
+        return likeList;
+    }
+
+    public void setLikeList(List<Like> likeList) {
+        this.likeList = likeList;
+    }
 
     public int getId() {
         return id;

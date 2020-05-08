@@ -11,9 +11,7 @@ import com.hza.bysj.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service("iAnswerService")
 public class AnswerServiceImpl implements IAnswerService {
@@ -88,6 +86,15 @@ public class AnswerServiceImpl implements IAnswerService {
         if(question==null)
             return ServerResponse.createByErrorMessage("问题不存在");
         List<Answer> answerlist = answerDAO.findByQuestion(question);
+        Iterator<Answer> iterator = answerlist.iterator();
+
+        while (iterator.hasNext()){
+            Answer answer = iterator.next();
+            User user = new User();
+            user.setName(answer.getUser().getName());
+            answer.setUser(user);
+        }
+
         return ServerResponse.createBySuccess(answerlist);
     }
 
@@ -96,6 +103,9 @@ public class AnswerServiceImpl implements IAnswerService {
         Answer answer = answerDAO.findById(answer_id).get();
         if(answer==null)
             return ServerResponse.createByErrorMessage("回答不存在");
+        User user = new User();
+        user.setName(answer.getUser().getName());
+        answer.setUser(user);
         return ServerResponse.createBySuccess(answer);
 
     }

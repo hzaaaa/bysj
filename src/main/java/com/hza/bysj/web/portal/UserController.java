@@ -58,12 +58,12 @@ public class UserController {
 
     @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<List<User>> getUserInfo(HttpSession session){
+    public ServerResponse<User> getUserInfo(HttpSession session){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        ArrayList<User> users = new ArrayList<>();
-        users.add(user);
+
+
         if(user != null){
-            return ServerResponse.createBySuccess(users);
+            return ServerResponse.createBySuccess(user);
         }
         return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
     }
@@ -93,27 +93,26 @@ public class UserController {
 
     @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew){
+    public ServerResponse<String> resetPassword(HttpSession session, @RequestBody Map map){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorMessage("用户未登录");
         }
-        return iUserService.resetPassword(passwordOld,passwordNew,user);
+        return iUserService.resetPassword((String)map.get("passwordOld"),(String)map.get("passwordNew"),user);
     }
 
 
     @RequestMapping(value = "update_information.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> update_information(HttpSession session, User user){
+    public ServerResponse<User> update_information(HttpSession session, @RequestBody User user){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         if(currentUser == null){
             return ServerResponse.createByErrorMessage("用户未登录");
         }
         user.setId(currentUser.getId());
-        user.setName(currentUser.getName());
         ServerResponse<User> response = iUserService.updateInformation(user);
         if(response.isSuccess()){
-            response.getData().setName(currentUser.getName());
+            response.getData().setPassword(null);
             session.setAttribute(Const.CURRENT_USER,response.getData());
         }
         return response;
