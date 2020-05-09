@@ -9,6 +9,7 @@ import com.hza.bysj.service.IAnswerService;
 import com.hza.bysj.service.IInviteService;
 import com.hza.bysj.service.ILikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,10 +75,10 @@ public class AnswerController {
         return iAnswerService.look_answer(id);
     }
 
-    @RequestMapping(value = "push_answer")
+    @RequestMapping(value = "push_answer.do/{page}/{size}")
     @ResponseBody
-    public ServerResponse<List<Answer>> push_answer(){
-        return iAnswerService.push_answer();
+    public ServerResponse<Page<Answer>> push_answer(@PathVariable("page")Integer page, @PathVariable("size")Integer size){
+        return iAnswerService.push_answer(page,size);
     }
 
     @RequestMapping(value = "like/{id}")

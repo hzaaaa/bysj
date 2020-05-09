@@ -95,13 +95,13 @@ public class QuestionController {
         return util.search(question.getQuestion_explain());
     }
 
-    @RequestMapping(value = "pull_questionsByUser.do",method = RequestMethod.GET)
+    @RequestMapping(value = "pull_questionsByUser.do//{page}/{size}",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<Question>> pull_questionsByUser (HttpSession session)  {
+    public ServerResponse<Page<Question>> pull_questionsByUser (HttpSession session,@PathVariable("page")Integer page, @PathVariable("size")Integer size)  {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
 
-        return iQuestionService.pull_questionsByUser(user);
+        return iQuestionService.pull_questionsByUser(user,page,size);
     }
     @RequestMapping(value = "pull_questionsByDate.do/{page}/{size}")
     @ResponseBody
@@ -113,7 +113,7 @@ public class QuestionController {
 
     @RequestMapping(value = "invite.do")
     @ResponseBody
-    public ServerResponse<Invite> invite(@RequestBody Map map,HttpSession session){
+    public ServerResponse<String> invite(@RequestBody Map map,HttpSession session){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
 

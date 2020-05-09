@@ -79,6 +79,11 @@ class BysjApplicationTests {
     void testlike(){
         User user = new User();
         user.setId(1);
-        iLikeService.like(user,2);
+        System.out.println(iLikeService.like(user, 2).getData());
+        System.out.println(iLikeService.like(user, 2).getData());
+        System.out.println(iLikeService.dislike(user, 2).getData());
+        System.out.println(iLikeService.dislike(user, 2).getData());
+        System.out.println(iLikeService.like(user, 2).getData());
+
     }
 }

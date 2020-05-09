@@ -38,15 +38,15 @@ public class LikeServiceImpl implements ILikeService {
             like.setIslike(1);
             likeDAO.save(like);
 
-            answer.setLike_count(answer.getLike_count()+1);
+            answer.setLove (answer.getLove ()+1);
             answerDAO.save(answer);
         }else {
             if(byUserAndAnswer.getIslike() == -1){
                 byUserAndAnswer.setIslike(1);
                 likeDAO.save(byUserAndAnswer);
 
-                answer.setLike_count(answer.getLike_count()+1);
-                answer.setDislike_count(answer.getDislike_count()-1);
+                answer.setLove (answer.getLove ()+1);
+                answer.setBoring (answer.getBoring ()-1);
                 answerDAO.save(answer);
             }else{
                 return ServerResponse.createBySuccess("已点赞");
@@ -74,15 +74,15 @@ public class LikeServiceImpl implements ILikeService {
             like.setIslike(-1);
             likeDAO.save(like);
 
-            answer.setDislike_count(answer.getDislike_count()+1);
+            answer.setBoring (answer.getBoring ()+1);
             answerDAO.save(answer);
         }else {
             if(byUserAndAnswer.getIslike() == 1){
                 byUserAndAnswer.setIslike(-1);
                 likeDAO.save(byUserAndAnswer);
 
-                answer.setLike_count(answer.getLike_count()-1);
-                answer.setDislike_count(answer.getDislike_count()+1);
+                answer.setLove (answer.getLove ()-1);
+                answer.setBoring (answer.getBoring ()+1);
                 answerDAO.save(answer);
             }else{
                 return ServerResponse.createBySuccess("已点踩");

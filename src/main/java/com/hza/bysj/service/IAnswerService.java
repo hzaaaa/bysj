@@ -4,6 +4,7 @@ import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.pojo.Answer;
 import com.hza.bysj.pojo.Question;
 import com.hza.bysj.pojo.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface IAnswerService {
     ServerResponse<List<Answer>> list_answerByUser(User user);
     ServerResponse<List<Answer>> list_answerByQuestionId(Integer question_id);
     ServerResponse<Answer> look_answer(Integer answer_id);
-    ServerResponse<List<Answer>>push_answer();
+    ServerResponse<Page<Answer>>push_answer(Integer page, Integer size);
 
     ServerResponse<List<Answer>> ManagelistAnswer(User user);
 }

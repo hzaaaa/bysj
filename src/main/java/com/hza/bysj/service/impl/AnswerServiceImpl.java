@@ -9,6 +9,10 @@ import com.hza.bysj.pojo.Tag;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,7 +28,7 @@ public class AnswerServiceImpl implements IAnswerService {
     private Comparator<Answer> c = new Comparator<Answer>() {
         @Override
         public int compare(Answer a1, Answer a2) {
-            if(a1.getLike_count()-a1.getDislike_count()>a2.getLike_count()-a2.getDislike_count())
+            if(a1.getLove()-a1.getBoring()>a2.getLove()-a2.getBoring ())
                 return 1;
             else return -1;
         }
@@ -38,8 +42,8 @@ public class AnswerServiceImpl implements IAnswerService {
         Answer answer1 = new Answer();
         answer1.setAnswer(answer);
         answer1.setDate(new Date());
-        answer1.setDislike_count(0);
-        answer1.setLike_count(0);
+        answer1.setBoring(0);
+        answer1.setLove (0);
         answer1.setQuestion(question);
         answer1.setUser(user);
         Answer save = answerDAO.save(answer1);
@@ -77,6 +81,7 @@ public class AnswerServiceImpl implements IAnswerService {
     @Override
     public ServerResponse<List<Answer>> list_answerByUser(User user) {
         List<Answer> answerlist = answerDAO.findByUser(user);
+        removePassword(answerlist.iterator());
         return ServerResponse.createBySuccess(answerlist);
     }
 
@@ -88,12 +93,7 @@ public class AnswerServiceImpl implements IAnswerService {
         List<Answer> answerlist = answerDAO.findByQuestion(question);
         Iterator<Answer> iterator = answerlist.iterator();
 
-        while (iterator.hasNext()){
-            Answer answer = iterator.next();
-            User user = new User();
-            user.setName(answer.getUser().getName());
-            answer.setUser(user);
-        }
+        removePassword(iterator);
 
         return ServerResponse.createBySuccess(answerlist);
     }
@@ -111,10 +111,27 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
-    public ServerResponse<List<Answer>> push_answer() {
-        List<Answer> answerlist = answerDAO.findAll();
-        answerlist.sort(c);
-        return ServerResponse.createBySuccess(answerlist);
+    public ServerResponse<Page<Answer>> push_answer(Integer page,Integer size) {
+        page = page<0?0:page;
+        Sort sort =  Sort.by(Sort.Direction.DESC, "love");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Answer> all = answerDAO.findAll(pageable);
+
+        Iterator<Answer> iterator = all.iterator();
+
+        removePassword(iterator);
+
+
+        return ServerResponse.createBySuccess(all);
+    }
+
+    private void removePassword(Iterator<Answer> iterator) {
+        while (iterator.hasNext()) {
+            Answer next = iterator.next();
+            User user = new User();
+            user.setName(next.getUser().getName());
+            next.setUser(user);
+        }
     }
 
     @Override

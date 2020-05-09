@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface IInviteService {
 
-    ServerResponse<Invite> invite_answer(User inviter,String invitee,Integer question_id);
+    ServerResponse<String> invite_answer(User inviter,String invitee,Integer question_id);
     ServerResponse<List<Invite>> look_myInvitedList(User user);
 }

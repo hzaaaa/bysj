@@ -15,7 +15,7 @@ public interface IQuestionService {
     ServerResponse<List<Question>> list_questionByUser(User user);
     ServerResponse<List<Question>> list_questionByTag(Tag tag);
     ServerResponse<Question> look_question(Integer question_id);
-    ServerResponse<List<Question>>pull_questionsByUser(User user);
+    ServerResponse<Page<Question>>pull_questionsByUser(User user,Integer page,Integer size);
     ServerResponse<Page<Question>>pull_questionsByDate(Integer page,Integer size);
 
     ServerResponse<List<Question>> ManagelistQuestion(User user);

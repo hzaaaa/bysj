@@ -160,7 +160,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public ServerResponse<List<Question>> pull_questionsByUser(User user) {
+    public ServerResponse<Page<Question>> pull_questionsByUser(User user,Integer page,Integer size) {
 
         User save = userDAO.findById(user.getId()).get();
         LinkedList<Question> questionslist = new LinkedList<>();
@@ -175,8 +175,11 @@ public class QuestionServiceImpl implements IQuestionService {
         }
 
         questionslist.sort(c);
+        page=page<0?0:page;
+        PageRequest of = PageRequest.of(page, size);
+        Page<Question> questions = util.listConvertToPage(questionslist, of);
 
-        return ServerResponse.createBySuccess(questionslist);
+        return ServerResponse.createBySuccess(questions);
     }
 
     @Override

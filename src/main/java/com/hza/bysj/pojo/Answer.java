@@ -29,10 +29,26 @@ public class Answer {
     private Date date;
     @Column(name = "answer")
     private String answer;
-    @Column(name = "like_count")
-    private Integer like_count;
-    @Column(name = "dislike_count")
-    private Integer dislike_count;
+    @Column(name = "love")
+    private Integer love;
+    @Column(name = "boring")
+    private Integer boring;
+
+    public Integer getLove() {
+        return love;
+    }
+
+    public void setLove(Integer love) {
+        this.love = love;
+    }
+
+    public Integer getBoring() {
+        return boring;
+    }
+
+    public void setBoring(Integer boring) {
+        this.boring = boring;
+    }
 
 
     @JsonIgnore
@@ -87,19 +103,5 @@ public class Answer {
         this.answer = answer;
     }
 
-    public Integer getLike_count() {
-        return like_count;
-    }
 
-    public void setLike_count(Integer like_count) {
-        this.like_count = like_count;
-    }
-
-    public Integer getDislike_count() {
-        return dislike_count;
-    }
-
-    public void setDislike_count(Integer dislike_count) {
-        this.dislike_count = dislike_count;
-    }
 }

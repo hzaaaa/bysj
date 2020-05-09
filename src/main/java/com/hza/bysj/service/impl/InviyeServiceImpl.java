@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class InviyeServiceImpl implements IInviteService {
     QuestionDAO questionDAO;
 
     @Override
-    public ServerResponse<Invite> invite_answer(User inviter, String invitee, Integer question_id) {
+    public ServerResponse<String> invite_answer(User inviter, String invitee, Integer question_id) {
         int countByName = userDAO.countByName(invitee);
         if(countByName == 0)return ServerResponse.createByErrorMessage("被邀请人不存在");
         User byName = userDAO.findByName(invitee);
@@ -42,12 +43,21 @@ public class InviyeServiceImpl implements IInviteService {
         invite.setDate(new Date());
         Invite save = inviteDAO.save(invite);
 
-        return ServerResponse.createBySuccess(save);
+        return ServerResponse.createBySuccessMessage("邀请成功");
     }
 
     @Override
     public ServerResponse<List<Invite>> look_myInvitedList(User user) {
         List<Invite> invitedList = inviteDAO.findAllByInviteeOrderByDateDesc(user);
+        Iterator<Invite> iterator = invitedList.iterator();
+
+        while (iterator.hasNext()){
+            User user1 = new User();
+            Invite next = iterator.next();
+            user1.setName(next.getInviter().getName());
+            next.setInviter(user1);
+            next.setInvitee(null);
+        }
         return ServerResponse.createBySuccess(invitedList);
     }
 }
