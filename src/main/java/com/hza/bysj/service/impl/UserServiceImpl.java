@@ -6,6 +6,9 @@ import com.hza.bysj.dao.UserDAO;
 import com.hza.bysj.pojo.User;
 import com.hza.bysj.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,7 +20,7 @@ import java.util.UUID;
 public class UserServiceImpl implements IUserService {
 
     @Autowired
-    private UserDAO UserDAO;
+    private UserDAO userDAO;
 
     private Map<String,String> token;
 
@@ -28,12 +31,12 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<User> login(String username, String password) {
         System.out.println(password);
-        int resultCount = UserDAO.countByName(username);
+        int resultCount = userDAO.countByName(username);
         if(resultCount == 0 ){
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
 
-        User user  = UserDAO.findByNameAndPassword(username,password);
+        User user  = userDAO.findByNameAndPassword(username,password);
         if(user == null){
             return ServerResponse.createByErrorMessage("密码错误");
         }
@@ -49,7 +52,7 @@ public class UserServiceImpl implements IUserService {
             return validResponse;
         }
         user.setRole(Const.Role.ROLE_CUSTOMER);
-        UserDAO.save(user);
+        userDAO.save(user);
 
         return ServerResponse.createBySuccessMessage("注册成功");
     }
@@ -57,7 +60,7 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> checkValid(String str,String type){
     //检查用户名是否不存在
             if(Const.USERNAME.equals(type)){
-                int resultCount = UserDAO.countByName(str);
+                int resultCount = userDAO.countByName(str);
                 if(resultCount > 0 ){
                     return ServerResponse.createByErrorMessage("用户名已存在");
                 }
@@ -72,7 +75,7 @@ public class UserServiceImpl implements IUserService {
             //用户不存在
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        User byName = UserDAO.findByName(username);
+        User byName = userDAO.findByName(username);
         String question = byName.getPassword_question();
         return ServerResponse.createBySuccess(question);
 
@@ -81,7 +84,7 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse<String> checkAnswer(String username,String question,String answer){
 
-        User result =      UserDAO.findByName(username);
+        User result =      userDAO.findByName(username);
         if(result.getPassword_question().equals(question)&&result.getPassword_answer().equals(answer)){
             String forgetToken = UUID.randomUUID().toString();
             token.put(username,forgetToken);
@@ -101,10 +104,10 @@ public class UserServiceImpl implements IUserService {
 
         if(token.equals(forgetToken)){
 
-            User user0=UserDAO.findByName(username);
+            User user0=userDAO.findByName(username);
             User user1=new User(username,passwordNew,user0.getPassword_question(),user0.getPassword_answer(),user0.getRole());
             user1.setId(user0.getId());
-            UserDAO.save(user1);
+            userDAO.save(user1);
 
             return ServerResponse.createBySuccessMessage("修改密码成功");
 
@@ -115,13 +118,13 @@ public class UserServiceImpl implements IUserService {
 
 
     public ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user){
-        User user0 = UserDAO.findByName(user.getName());
+        User user0 = userDAO.findByName(user.getName());
         if(!user0.getPassword().equals( passwordOld)){
             return ServerResponse.createByErrorMessage("旧密码错误");
         }
 
         user.setPassword(passwordNew);
-        UserDAO.save(user);
+        userDAO.save(user);
         return ServerResponse.createBySuccessMessage("密码更新成功");
 
     }
@@ -129,12 +132,12 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse<User> updateInformation(User user){
 
-        User updateUser=UserDAO.findById(user.getId()).get();
+        User updateUser=userDAO.findById(user.getId()).get();
         updateUser.setPassword_question(user.getPassword_question());
         updateUser.setPassword_answer(user.getPassword_answer());
         updateUser.setRole(user.getRole());
 
-        UserDAO.save(updateUser);
+        userDAO.save(updateUser);
         return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
 
     }
@@ -142,7 +145,7 @@ public class UserServiceImpl implements IUserService {
 
 
     public ServerResponse<User> getInformation(Integer userId){
-        Optional<User> user = UserDAO.findById(userId);
+        Optional<User> user = userDAO.findById(userId);
         if(user == null){
             return ServerResponse.createByErrorMessage("找不到当前用户");
         }
@@ -166,6 +169,15 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByError();
     }
 
+    @Override
+    public ServerResponse<Page<User>> userList(Integer page, Integer size) {
+
+        page=page<0?0:page;
+        PageRequest of = PageRequest.of(page, size);
+        Page<User> all = userDAO.findAll(of);
+
+        return ServerResponse.createBySuccess(all);
+    }
 
 
 }

@@ -2,6 +2,7 @@ package com.hza.bysj.service;
 
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.pojo.User;
+import org.springframework.data.domain.Page;
 
 public interface IUserService {
 
@@ -24,4 +25,5 @@ public interface IUserService {
     ServerResponse<User> getInformation(Integer userId);
 
     ServerResponse checkAdminRole(User user);
+    ServerResponse<Page<User>> userList(Integer page,Integer size);
 }

@@ -186,7 +186,7 @@ public class QuestionServiceImpl implements IQuestionService {
     public ServerResponse<Page<Question>> pull_questionsByDate(Integer page ,Integer size) {
         int start = page;
         start = start<0?0:start;
-        Sort sort =  Sort.by(Sort.Direction.DESC, "id");
+        Sort sort =  Sort.by(Sort.Direction.DESC, "date");
         Pageable pageable = PageRequest.of(start, size, sort);
         Page<Question> page0 =questionDAO.findAll(pageable);
 
@@ -194,9 +194,13 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public ServerResponse<List<Question>> ManagelistQuestion(User user) {
-        List<Question> questions = questionDAO.findAllByOrderByDateDesc();
-        return ServerResponse.createBySuccess(questions);
+    public ServerResponse<Page<Question>> ManagelistQuestion(Integer page, Integer size) {
+
+        page=page<0?0:page;
+        PageRequest of = PageRequest.of(page, size);
+        Page<Question> all = questionDAO.findAll(of);
+
+        return ServerResponse.createBySuccess(all);
     }
 
 

@@ -18,7 +18,7 @@ public interface IQuestionService {
     ServerResponse<Page<Question>>pull_questionsByUser(User user,Integer page,Integer size);
     ServerResponse<Page<Question>>pull_questionsByDate(Integer page,Integer size);
 
-    ServerResponse<List<Question>> ManagelistQuestion(User user);
+    ServerResponse<Page<Question>> ManagelistQuestion(Integer page,Integer size);
 
 
 
