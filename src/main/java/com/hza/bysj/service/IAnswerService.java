@@ -17,5 +17,6 @@ public interface IAnswerService {
     ServerResponse<Answer> look_answer(Integer answer_id);
     ServerResponse<Page<Answer>>push_answer(Integer page, Integer size);
 
-    ServerResponse<List<Answer>> ManagelistAnswer(User user);
+    ServerResponse<Page<Answer>> ManagelistAnswer(Integer page, Integer size);
+    ServerResponse<String> ManagedeleteAnswer(Integer id);
 }

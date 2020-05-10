@@ -19,6 +19,7 @@ public interface IQuestionService {
     ServerResponse<Page<Question>>pull_questionsByDate(Integer page,Integer size);
 
     ServerResponse<Page<Question>> ManagelistQuestion(Integer page,Integer size);
+    ServerResponse<String>ManageDeleteQuestion(Integer id);
 
 
 

@@ -50,7 +50,7 @@ public class QuestionServiceImpl implements IQuestionService {
 
         Question question1 = new Question();
         question1.setUser(user);
-        question1.setDate(new Date());
+        question1.setDate(new java.sql.Date(new java.util.Date().getTime()));
         question1.setQuestion_title(question_title);
         question1.setQuestion_explain(question_explain);
         question1.setTag(tag);
@@ -201,6 +201,15 @@ public class QuestionServiceImpl implements IQuestionService {
         Page<Question> all = questionDAO.findAll(of);
 
         return ServerResponse.createBySuccess(all);
+    }
+
+    @Override
+    public ServerResponse<String> ManageDeleteQuestion(Integer id) {
+        Optional<Question> byId = questionDAO.findById(id);
+        if(byId == null)return ServerResponse.createByErrorMessage("问题不存在");
+        Question question = byId.get();
+        questionDAO.delete(question);
+        return ServerResponse.createBySuccessMessage("问题删除成功");
     }
 
 

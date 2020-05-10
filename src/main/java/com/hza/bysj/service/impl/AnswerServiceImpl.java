@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.sql.Date;
 
 @Service("iAnswerService")
 public class AnswerServiceImpl implements IAnswerService {
@@ -41,7 +42,7 @@ public class AnswerServiceImpl implements IAnswerService {
             return ServerResponse.createByErrorMessage("问题不存在");
         Answer answer1 = new Answer();
         answer1.setAnswer(answer);
-        answer1.setDate(new Date());
+        answer1.setDate(new java.sql.Date(new java.util.Date().getTime()));
         answer1.setBoring(0);
         answer1.setLove (0);
         answer1.setQuestion(question);
@@ -72,7 +73,7 @@ public class AnswerServiceImpl implements IAnswerService {
             return ServerResponse.createByErrorMessage("非法更新");
         }else {
             answer.setAnswer(answer_text);
-            answer.setDate(new Date());
+            answer.setDate(new java.sql.Date(new java.util.Date().getTime()));
             answerDAO.save(answer);
             return ServerResponse.createBySuccess(answer);
         }
@@ -135,9 +136,22 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
-    public ServerResponse<List<Answer>> ManagelistAnswer(User user) {
-        List<Answer> answerlist = answerDAO.findAll();
-        return ServerResponse.createBySuccess(answerlist);
+    public ServerResponse<Page<Answer>> ManagelistAnswer(Integer page, Integer size) {
+        page=page<0?0:page;
+        PageRequest of = PageRequest.of(page, size);
+        Page<Answer> all = answerDAO.findAll(of);
+
+        return ServerResponse.createBySuccess(all);
+    }
+
+    @Override
+    public ServerResponse<String> ManagedeleteAnswer(Integer id) {
+        Optional<Answer> byId = answerDAO.findById(id);
+        if(byId == null)return ServerResponse.createByErrorMessage("回答不存在");
+        Answer answer = byId.get();
+        answerDAO.delete(answer);
+
+        return ServerResponse.createBySuccessMessage("回答删除成功");
     }
 
 }

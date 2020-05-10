@@ -40,7 +40,7 @@ public class InviyeServiceImpl implements IInviteService {
         invite.setInviter(inviter);
         invite.setInvitee(byName);
         invite.setQuestion(question);
-        invite.setDate(new Date());
+        invite.setDate(new java.sql.Date(new java.util.Date().getTime()));
         Invite save = inviteDAO.save(invite);
 
         return ServerResponse.createBySuccessMessage("邀请成功");

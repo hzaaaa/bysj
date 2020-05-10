@@ -117,6 +117,7 @@ public class util {
 
             System.out.print((i + 1));
             Question question = new Question();
+            question.setId(Integer.parseInt(d.get("id")));
             question.setQuestion_title(d.get("question_title"));
             question.setQuestion_explain(d.get("question_explain"));
             questions.add(question);

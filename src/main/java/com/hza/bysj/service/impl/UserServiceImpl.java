@@ -179,5 +179,15 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess(all);
     }
 
+    @Override
+    public ServerResponse<String> ManageDeleteUser(Integer id) {
+        Optional<User> byId = userDAO.findById(id);
+        if(byId == null)return ServerResponse.createByErrorMessage("用户不存在");
+        User user = byId.get();
+        userDAO.delete(user);
+
+        return ServerResponse.createBySuccessMessage("用户删除成功");
+    }
+
 
 }

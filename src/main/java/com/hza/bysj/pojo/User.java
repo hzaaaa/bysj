@@ -1,5 +1,6 @@
 package com.hza.bysj.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 
@@ -26,12 +27,67 @@ public class User {
     private  String password_question;
     @Column(name = "password_answer")
     private  String password_answer;
-
     @ManyToMany
     @JoinTable(name = "user_tag",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> taglist;
 
+
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="user")
+    private List<Answer> answerList;
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="user")
+    private List<Question> questionList;
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="user")
+    private List<Like> likeList;
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="inviter")
+    private List<Invite> inviterList;
+    @JsonIgnore
+    @OneToMany(cascade={CascadeType.REMOVE},mappedBy="invitee")
+    private List<Invite> inviteeList;
+
+    public List<Answer> getAnswerList() {
+        return answerList;
+    }
+
+    public void setAnswerList(List<Answer> answerList) {
+        this.answerList = answerList;
+    }
+
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
+    }
+
+    public List<Like> getLikeList() {
+        return likeList;
+    }
+
+    public void setLikeList(List<Like> likeList) {
+        this.likeList = likeList;
+    }
+
+    public List<Invite> getInviterList() {
+        return inviterList;
+    }
+
+    public void setInviterList(List<Invite> inviterList) {
+        this.inviterList = inviterList;
+    }
+
+    public List<Invite> getInviteeList() {
+        return inviteeList;
+    }
+
+    public void setInviteeList(List<Invite> inviteeList) {
+        this.inviteeList = inviteeList;
+    }
 
     public List<Tag> getTaglist() {
         return taglist;
