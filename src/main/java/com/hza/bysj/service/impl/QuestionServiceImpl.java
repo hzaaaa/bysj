@@ -86,16 +86,7 @@ public class QuestionServiceImpl implements IQuestionService {
 
             questionDAO.delete(question);
 
-            IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);
-            IndexWriter indexWriter = null;
-            try {
-                indexWriter = new IndexWriter(CodeCache.index, config);
-                indexWriter.deleteDocuments(new Term("id", question.getId().toString()));
-                indexWriter.commit();
-                indexWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            removeQuestionAtSearch(question);
             return ServerResponse.createBySuccessMessage("删除成功");
         }
         return ServerResponse.createByErrorMessage("该用户无权删除");
@@ -209,7 +200,23 @@ public class QuestionServiceImpl implements IQuestionService {
         if(byId == null)return ServerResponse.createByErrorMessage("问题不存在");
         Question question = byId.get();
         questionDAO.delete(question);
+
+        removeQuestionAtSearch(question);
+
         return ServerResponse.createBySuccessMessage("问题删除成功");
+    }
+
+    private void removeQuestionAtSearch(Question question) {
+        IndexWriterConfig config = new IndexWriterConfig(CodeCache.analyzer);
+        IndexWriter indexWriter = null;
+        try {
+            indexWriter = new IndexWriter(CodeCache.index, config);
+            indexWriter.deleteDocuments(new Term("id", question.getId().toString()));
+            indexWriter.commit();
+            indexWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

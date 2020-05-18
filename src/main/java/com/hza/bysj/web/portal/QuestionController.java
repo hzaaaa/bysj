@@ -95,7 +95,7 @@ public class QuestionController {
         return util.search(question.getQuestion_explain());
     }
 
-    @RequestMapping(value = "pull_questionsByUser.do//{page}/{size}",method = RequestMethod.GET)
+    @RequestMapping(value = "pull_questionsByUser.do/{page}/{size}",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<Page<Question>> pull_questionsByUser (HttpSession session,@PathVariable("page")Integer page, @PathVariable("size")Integer size)  {
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -127,6 +127,15 @@ public class QuestionController {
         if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
 
         return iInviteService.look_myInvitedList(user);
+
+    }
+    @RequestMapping(value = "deleteInvitedById.do/{id}")
+    @ResponseBody
+    public ServerResponse<String> deleteInvitedById(HttpSession session,@PathVariable("id") Integer id) {
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iInviteService.deleteInviteById(id,user);
 
     }
 

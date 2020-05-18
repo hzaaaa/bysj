@@ -7,5 +7,6 @@ public interface ILikeService {
 
     ServerResponse<String>   like(User user,Integer answer_id);
     ServerResponse<String>   dislike(User user,Integer answer_id);
+    ServerResponse<Integer>  isLike(User user,Integer answer_id);
 
 }

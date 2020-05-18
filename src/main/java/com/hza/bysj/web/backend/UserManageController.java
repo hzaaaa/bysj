@@ -1,5 +1,4 @@
 package com.hza.bysj.web.backend;
-
 import com.hza.bysj.common.Const;
 import com.hza.bysj.common.ServerResponse;
 import com.hza.bysj.pojo.Answer;
@@ -68,10 +67,10 @@ public class UserManageController {
         }
 
     }
-    @RequestMapping(value = "deleteUserById.do/{id}}")
+    @RequestMapping(value = "deleteUserById.do/{id}")
     @ResponseBody
     public ServerResponse deleteUserById(HttpSession session, @PathVariable("id")Integer id){
-
+        //封禁用户
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
 
@@ -83,7 +82,7 @@ public class UserManageController {
 
 
     }
-    @RequestMapping(value = "deleteAnswerById.do/{id}}")
+    @RequestMapping(value = "deleteAnswerById.do/{id}")
     @ResponseBody
     public ServerResponse deleteAnswerById(HttpSession session, @PathVariable("id")Integer id){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -95,7 +94,7 @@ public class UserManageController {
             return ServerResponse.createByErrorMessage("用户无权操作");
         }
     }
-    @RequestMapping(value = "deleteQuestionById.do/{id}}")
+    @RequestMapping(value = "deleteQuestionById.do/{id}")
     @ResponseBody
     public ServerResponse deleteQuestionById(HttpSession session, @PathVariable("id")Integer id){
         User user = (User)session.getAttribute(Const.CURRENT_USER);

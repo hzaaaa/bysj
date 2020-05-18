@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service("iUserService")
 public class UserServiceImpl implements IUserService {
@@ -39,6 +36,9 @@ public class UserServiceImpl implements IUserService {
         User user  = userDAO.findByNameAndPassword(username,password);
         if(user == null){
             return ServerResponse.createByErrorMessage("密码错误");
+        }
+        if(user.getRole() == -1){
+            return ServerResponse.createByErrorMessage("用户被封禁");
         }
         user.setPassword(null);
         return ServerResponse.createBySuccess("登录成功",user);
@@ -176,6 +176,14 @@ public class UserServiceImpl implements IUserService {
         PageRequest of = PageRequest.of(page, size);
         Page<User> all = userDAO.findAll(of);
 
+        Iterator<User> iterator = all.iterator();
+        while(iterator.hasNext()){
+            User next = iterator.next();
+            next.setPassword(null);
+            next.setPassword_answer(null);
+        }
+
+
         return ServerResponse.createBySuccess(all);
     }
 
@@ -184,9 +192,10 @@ public class UserServiceImpl implements IUserService {
         Optional<User> byId = userDAO.findById(id);
         if(byId == null)return ServerResponse.createByErrorMessage("用户不存在");
         User user = byId.get();
-        userDAO.delete(user);
+        user.setRole(-1);
+        userDAO.save(user);
 
-        return ServerResponse.createBySuccessMessage("用户删除成功");
+        return ServerResponse.createBySuccessMessage("用户封禁成功");
     }
 
 

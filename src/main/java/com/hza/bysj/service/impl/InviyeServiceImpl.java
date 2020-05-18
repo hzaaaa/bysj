@@ -60,4 +60,20 @@ public class InviyeServiceImpl implements IInviteService {
         }
         return ServerResponse.createBySuccess(invitedList);
     }
+
+    @Override
+    public ServerResponse<String> deleteInviteById(Integer id,User user) {
+        Optional<Invite> byId = inviteDAO.findById(id);
+        if(byId == null){
+            return ServerResponse.createByErrorMessage("invite不存在");
+        }
+        Invite invite = byId.get();
+        if(invite.getInvitee().getId()!=user.getId()){
+            return ServerResponse.createByErrorMessage("无权删除invite");
+        }else{
+            inviteDAO.delete(invite);
+            return ServerResponse.createBySuccessMessage("删除成功");
+        }
+
+    }
 }

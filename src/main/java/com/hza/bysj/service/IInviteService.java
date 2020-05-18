@@ -10,4 +10,5 @@ public interface IInviteService {
 
     ServerResponse<String> invite_answer(User inviter,String invitee,Integer question_id);
     ServerResponse<List<Invite>> look_myInvitedList(User user);
+    ServerResponse<String> deleteInviteById(Integer id,User user);
 }

@@ -141,6 +141,11 @@ public class AnswerServiceImpl implements IAnswerService {
         PageRequest of = PageRequest.of(page, size);
         Page<Answer> all = answerDAO.findAll(of);
 
+        Iterator<Answer> iterator = all.iterator();
+
+        removePassword(iterator);
+
+
         return ServerResponse.createBySuccess(all);
     }
 

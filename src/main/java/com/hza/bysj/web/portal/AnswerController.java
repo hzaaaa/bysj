@@ -97,6 +97,14 @@ public class AnswerController {
 
         return iLikeService.dislike(user,answer_id);
     }
+    @RequestMapping(value = "isLike/{id}")
+    @ResponseBody
+    public ServerResponse<Integer> isLike(HttpSession session,@PathVariable("id")Integer answer_id){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+
+        return iLikeService.isLike(user,answer_id);
+    }
 
 
 

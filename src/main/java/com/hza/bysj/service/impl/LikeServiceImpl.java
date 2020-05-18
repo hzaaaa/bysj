@@ -87,9 +87,24 @@ public class LikeServiceImpl implements ILikeService {
             }else{
                 return ServerResponse.createBySuccess("已点踩");
             }
-
         }
 
         return ServerResponse.createBySuccess("点踩成功");
+    }
+
+    @Override
+    public ServerResponse<Integer> isLike(User user, Integer answer_id) {
+        Optional<Answer> byId = answerDAO.findById(answer_id);
+        if(byId == null){
+            return ServerResponse.createByErrorMessage("回答不存在");
+        }
+        Answer answer = byId.get();
+        Like byUserAndAnswer = likeDAO.findByUserAndAnswer(user, answer);
+
+        if(byUserAndAnswer == null)
+            return ServerResponse.createBySuccess(new Integer(0));
+        else
+            return ServerResponse.createBySuccess(byUserAndAnswer.getIslike());
+
     }
 }
